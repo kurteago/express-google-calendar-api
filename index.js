@@ -43,13 +43,40 @@ app.post("/create-event", async (req, res) => {
 
     oAuth2Client.setCredentials({ refresh_token });
 
-
-
     const result = await calendar.events.insert({
       calendarId: 'primary',
       requestBody: req.body,
       auth: oAuth2Client,
     });
+
+    res.status(200).send(result);
+  } catch (e) {
+    console.log({ e });
+    res.status(500).send({ e });
+  }
+});
+
+app.post("/get-events", async (req, res) => {
+  try {
+    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+
+    oAuth2Client.setCredentials({ refresh_token });
+
+    const result = await calendar.events.list({
+      calendarId: req.body.calendarId,
+      timeMin: (new Date()).toISOString(),
+      maxResults: 10,
+      singleEvents: true,
+      orderBy: 'startTime',
+    });
+
+    //calendar.events.list({
+    //  calendarId: 'primary',
+    //  timeMin: (new Date()).toISOString(),
+    //  maxResults: 10,
+    //  singleEvents: true,
+    //  orderBy: 'startTime',
+    //}
 
     res.status(200).send(result);
   } catch (e) {
