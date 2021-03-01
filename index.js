@@ -20,7 +20,7 @@ app.get("/status", async (req, res) => {
 
 app.post("/create-calendar", async (req, res) => {
   try {
-    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris[0]);
+    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
 
     oAuth2Client.setCredentials({ refresh_token });
 
