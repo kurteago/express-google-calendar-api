@@ -26,11 +26,28 @@ app.post("/create-calendar", async (req, res) => {
     oAuth2Client.setCredentials({ refresh_token });
 
     const result = await calendar.calendars.insert({
-      requestBody: {
-        summary: req.body.summary,
-        description: req.body.message,
-        timeZone: "America/Sao_Paulo",
-      },
+      requestBody: req.body,
+      auth: oAuth2Client,
+    });
+
+    res.status(200).send(result);
+  } catch (e) {
+    console.log({ e });
+    res.status(500).send({ e });
+  }
+});
+
+app.post("/create-event", async (req, res) => {
+  try {
+    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+
+    oAuth2Client.setCredentials({ refresh_token });
+
+
+
+    const result = await calendar.events.insert({
+      calendarId: 'primary',
+      requestBody: req.body,
       auth: oAuth2Client,
     });
 
