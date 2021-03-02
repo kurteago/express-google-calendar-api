@@ -37,6 +37,7 @@ app.post("/create-calendar", async (req, res) => {
   }
 });
 
+
 app.post("/create-event", async (req, res) => {
   try {
     const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
@@ -59,10 +60,11 @@ app.post("/create-event", async (req, res) => {
 app.post("/get-events", async (req, res) => {
   try {
     const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
-
+    
     oAuth2Client.setCredentials({ refresh_token });
-
-    const result = await calendar.events.list({
+    
+    const calendar2 = google.calendar({ version: "v3", auth: oAuth2Client });  // Modified
+    const result = await calendar2.events.list({
       calendarId: req.body.calendarId,
       timeMin: (new Date()).toISOString(),
       maxResults: 10,
