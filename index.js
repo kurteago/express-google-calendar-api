@@ -63,22 +63,14 @@ app.post("/get-events", async (req, res) => {
     
     oAuth2Client.setCredentials({ refresh_token });
     
-    const calendar2 = google.calendar({ version: "v3", auth: oAuth2Client });  // Modified
-    const result = await calendar2.events.list({
+    const result = await calendar.events.list({
       calendarId: req.body.calendarId,
       timeMin: (new Date()).toISOString(),
       maxResults: 10,
       singleEvents: true,
       orderBy: 'startTime',
+      auth: oAuth2Client,
     });
-
-    //calendar.events.list({
-    //  calendarId: 'primary',
-    //  timeMin: (new Date()).toISOString(),
-    //  maxResults: 10,
-    //  singleEvents: true,
-    //  orderBy: 'startTime',
-    //}
 
     res.status(200).send(result);
   } catch (e) {
