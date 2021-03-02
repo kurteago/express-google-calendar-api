@@ -66,7 +66,8 @@ app.post("/get-events", async (req, res) => {
     const result = await calendar.events.list({
       calendarId: req.body.calendarId,
       timeMin: (new Date()).toISOString(),
-      maxResults: 10,
+      maxResults: req.body.maxResults,
+      //maxResults: 10,
       singleEvents: true,
       orderBy: 'startTime',
       auth: oAuth2Client,
