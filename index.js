@@ -57,7 +57,34 @@ app.post("/create-event", async (req, res) => {
   }
 });
 
+//get future event for given email: 'q: req.body.q'
 app.post("/get-events", async (req, res) => {
+  try {
+    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+    
+    oAuth2Client.setCredentials({ refresh_token });
+    
+    const result = await calendar.events.list({
+      calendarId: req.body.calendarId,
+      timeMin: (new Date()).toISOString(),
+      maxResults: req.body.maxResults,
+      q: req.body.q,
+      //maxResults: 10,
+      singleEvents: true,
+      orderBy: 'startTime',
+      auth: oAuth2Client,
+      //fields: 'items(attendees/email)'
+    });
+
+    res.status(200).send(result);
+  } catch (e) {
+    console.log({ e });
+    res.status(500).send({ e });
+  }
+});
+
+//get all events from the given calendar
+app.post("/get-all-events", async (req, res) => {
   try {
     const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
     
