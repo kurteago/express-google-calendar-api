@@ -60,9 +60,13 @@ app.post("/create-event", async (req, res) => {
 //get future event for given email: 'q: req.body.q'
 app.post("/get-events", async (req, res) => {
   try {
-    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+    ///const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
     
-    oAuth2Client.setCredentials({ refresh_token });
+    //oAuth2Client.setCredentials({ refresh_token });
+    const auth = new google.auth.GoogleAuth({
+      keyFile: 'credentials.json',
+      scopes: ['https://www.googleapis.com/auth/calendar'],
+    });
     
     const result = await calendar.events.list({
       calendarId: req.body.calendarId,
@@ -72,7 +76,7 @@ app.post("/get-events", async (req, res) => {
       //maxResults: 10,
       singleEvents: true,
       orderBy: 'startTime',
-      auth: oAuth2Client,
+      auth: auth,
       //fields: 'items(attendees/email)'
     });
 
