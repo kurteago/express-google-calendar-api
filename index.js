@@ -87,6 +87,14 @@ app.post("/get-events", async (req, res) => {
 app.post("/get-all-events", async (req, res) => {
   try {
     const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+
+    oauth2Client.on('tokens', (tokens) => {
+      if (tokens.refresh_token) {
+        // store the refresh_token in my database!
+        console.log(tokens.refresh_token);
+      }
+      console.log(tokens.access_token);
+    });
     
     oAuth2Client.setCredentials({ refresh_token });
     
