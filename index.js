@@ -86,17 +86,14 @@ app.post("/get-events", async (req, res) => {
 //get all events from the given calendar
 app.post("/get-all-events", async (req, res) => {
   try {
-    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+    //const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
 
-    oauth2Client.on('tokens', (tokens) => {
-      if (tokens.refresh_token) {
-        // store the refresh_token in my database!
-        //console.log(tokens.refresh_token);
-        oAuth2Client.setCredentials( tokens.refresh_token );
-      }
-      console.log(tokens.access_token);
+    const auth = new google.auth.GoogleAuth({
+      keyFile: 'credentials.json',
+      scopes: ['https://www.googleapis.com/auth/calendar'],
     });
     
+    //oAuth2Client.setCredentials({ refresh_token });
     
     const result = await calendar.events.list({
       calendarId: req.body.calendarId,
@@ -105,7 +102,7 @@ app.post("/get-all-events", async (req, res) => {
       //maxResults: 10,
       singleEvents: true,
       orderBy: 'startTime',
-      auth: oAuth2Client,
+      auth: auth,
     });
 
     res.status(200).send(result);
