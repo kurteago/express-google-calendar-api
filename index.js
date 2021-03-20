@@ -4,7 +4,7 @@ const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar("v3");
 
-const { client_id, client_secret, redirect_uris, refresh_token, GOOGLE_CREDENTIALS } = process.env;
+const { client_id, client_secret, redirect_uris, refresh_token } = process.env;
 
 const express = require("express");
 const cors = require("cors");
