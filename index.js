@@ -61,13 +61,32 @@ app.post("/create-event", async (req, res) => {
 app.post("/get-events", async (req, res) => {
   try {
     const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
-    
     oAuth2Client.setCredentials({ refresh_token });
-    /* const auth = new google.auth.GoogleAuth({
-      keyFile: 'credentials.json',
-      scopes: ['https://www.googleapis.com/auth/calendar'],
-    }); */
-    
+  
+    const result = await calendar.events.list({
+      calendarId: req.body.calendarId,
+      timeMin: (new Date()).toISOString(),
+      maxResults: req.body.maxResults,
+      q: req.body.q,
+      //maxResults: 10,
+      singleEvents: true,
+      orderBy: 'startTime',
+      auth: oAuth2Client,
+      //fields: 'items(attendees/email)'
+    });
+
+    res.status(200).send(result);
+  } catch (e) {
+    console.log({ e });
+    res.status(500).send({ e });
+  }
+});
+
+app.post("/get-all-events", async (req, res) => {
+  try {
+    const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
+    oAuth2Client.setCredentials({ refresh_token });
+  
     const result = await calendar.events.list({
       calendarId: req.body.calendarId,
       timeMin: (new Date()).toISOString(),
@@ -88,16 +107,13 @@ app.post("/get-events", async (req, res) => {
 });
 
 //get all events from the given calendar
-app.post("/get-all-events", async (req, res) => {
+/* app.post("/get-all-events", async (req, res) => {
   try {
-    //const oAuth2Client = new OAuth2(client_id, client_secret, redirect_uris);
 
     const auth = new google.auth.GoogleAuth({
       keyFile: 'credentials.json',
       scopes: ['https://www.googleapis.com/auth/calendar'],
     });
-    
-    //oAuth2Client.setCredentials({ refresh_token });
     
     const result = await calendar.events.list({
       calendarId: req.body.calendarId,
@@ -114,7 +130,7 @@ app.post("/get-all-events", async (req, res) => {
     console.log({ e });
     res.status(500).send({ e });
   }
-});
+}); */
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
